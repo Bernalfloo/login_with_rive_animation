@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
+import 'dart:async';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -11,33 +12,34 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   bool _obscureText = true;
 
-  // crear el cerebro de la animacion
+  // Rive
   StateMachineController? _controller;
-  //SMI: State Machine Input
   SMIBool? _isChecking;
   SMIBool? _isHandsUp;
   SMITrigger? _trigSuccess;
   SMITrigger? _trigFail;
+  SMINumber? _numLook;
 
-  //1.1) Crear variables para FocusNode
+  // Focus
   final _emailFocusNode = FocusNode();
   final _passwordFocusNode = FocusNode();
 
-  //1.2) Listener para FocusNode(Oyentes/chismosos)
+  Timer? _typingDebounce;
+
   @override
   void initState() {
     super.initState();
+
     _emailFocusNode.addListener(() {
       if (_emailFocusNode.hasFocus) {
-        //verifica que sea nulo
-        if (_isHandsUp != null) {
-          // manos abajo en el email
+        if (_isHandsUp != null && _numLook != null) {
           _isHandsUp!.change(false);
+          _numLook!.value = 50.0;
         }
       }
     });
+
     _passwordFocusNode.addListener(() {
-      //manos arriba en password
       if (_isHandsUp != null) {
         _isHandsUp!.change(_passwordFocusNode.hasFocus);
       }
@@ -46,13 +48,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final Size size = MediaQuery.of(context).size;
+    final size = MediaQuery.of(context).size;
 
     return Scaffold(
-      //Evita que se quite espacio del nudge
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+          padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(
             children: [
               SizedBox(
@@ -61,40 +62,47 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: RiveAnimation.asset(
                   'assets/animated_login_bear.riv',
                   stateMachines: const ['Login Machine'],
-                  //Al iniciar la animacion
+                  fit: BoxFit.contain,
                   onInit: (artboard) {
                     _controller = StateMachineController.fromArtboard(
                       artboard,
                       'Login Machine',
                     );
 
-                    //verifica que inicio bien
                     if (_controller == null) return;
-                    // agrega el controlador al tablero/escenario
+
                     artboard.addController(_controller!);
+
                     _isChecking =
                         _controller!.findSMI('isChecking') as SMIBool?;
                     _isHandsUp = _controller!.findSMI('isHandsUp') as SMIBool?;
                     _trigSuccess =
                         _controller!.findSMI('trigSuccess') as SMITrigger?;
                     _trigFail = _controller!.findSMI('trigFail') as SMITrigger?;
+                    _numLook = _controller!.findSMI('numLook') as SMINumber?;
                   },
-                  fit: BoxFit.contain,
                 ),
               ),
               const SizedBox(height: 24),
+
+              // EMAIL
               TextField(
-                //1.3 Asignar FocusNode al Textfield
                 focusNode: _emailFocusNode,
                 onChanged: (value) {
-                  if (_isHandsUp != null) {
-                    //No tapes los ojos al ver email
-                    //_isHandsUp!.change(false);
-                  }
-                  //Si isChecking no es nulo
-                  if (_isChecking == null) return;
-                  // activar el modo chismoso
+                  if (_isChecking == null || _numLook == null) return;
+
                   _isChecking!.change(true);
+
+                  final look = (value.length / 80.0 * 100.0).clamp(0.0, 100.0);
+                  _numLook!.value = look;
+
+                  // reiniciar debounce
+                  _typingDebounce?.cancel();
+
+                  _typingDebounce = Timer(const Duration(seconds: 1), () {
+                    if (!mounted) return;
+                    _isChecking?.change(false);
+                  });
                 },
                 decoration: InputDecoration(
                   hintText: 'Email',
@@ -104,17 +112,18 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
               ),
+
               const SizedBox(height: 12),
+
+              // PASSWORD
               TextField(
                 focusNode: _passwordFocusNode,
                 obscureText: _obscureText,
-                onChanged: (value) {
-                  if (_isChecking != null) {
-                    _isChecking!.change(false);
-                  }
-                  if (_isHandsUp != null) {
-                    _isHandsUp!.change(true);
-                  }
+                onChanged: (_) {
+                  _typingDebounce?.cancel();
+
+                  _isChecking?.change(false);
+                  _isHandsUp?.change(true);
                 },
                 decoration: InputDecoration(
                   hintText: 'Password',
@@ -134,6 +143,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
               ),
+
               const SizedBox(height: 16),
             ],
           ),
@@ -144,8 +154,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void dispose() {
+    _typingDebounce?.cancel();
     _emailFocusNode.dispose();
     _passwordFocusNode.dispose();
+    _typingDebounce?.cancel();
     super.dispose();
   }
 }
