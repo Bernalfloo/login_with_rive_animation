@@ -43,53 +43,59 @@ The animation improves the **user experience (UX)** by providing visual feedback
 
 ### What is Rive?
 
-**Rive** is a real-time interactive animation tool used by designers and developers to create animations that can respond to user input.  
-Unlike traditional animations (like GIFs or videos), Rive animations can be **interactive**, meaning they can change depending on what the user does.
+**Rive** is a real-time interactive animation tool used by designers and developers to create animations that can respond to user input.
 
-Rive allows developers to export animations that work on multiple platforms such as:
+Unlike traditional animations such as videos or GIFs, Rive animations can be **interactive**, meaning they can change dynamically depending on user behavior.
 
-- Mobile apps
-- Web applications
-- Games
-- Desktop applications
+Rive allows animations to be exported and used in multiple platforms including:
+
+- Mobile applications  
+- Web applications  
+- Games  
+- Desktop applications  
+
+This makes it a powerful tool for creating modern and dynamic user interfaces.
 
 ---
 
 ### What is a State Machine?
 
-A **State Machine** in Rive is a system that controls how an animation behaves based on different states and conditions.
+A **State Machine** in Rive is a system that controls how an animation behaves depending on different states and conditions.
 
-It works similarly to logic in programming:
+State Machines allow animations to change automatically based on inputs such as:
 
-- Different **states** represent different animation behaviors.
-- **Inputs** (such as triggers or boolean values) control transitions between states.
+- Boolean values  
+- Triggers  
+- Numeric values  
 
-For example, in this project:
+In this project, the State Machine controls the bear’s reactions depending on user interaction.
+
+Example behaviors used in this login screen:
 
 | User Action | Animation Reaction |
 |-------------|-------------------|
 | User types email | Bear follows cursor |
-| Password field selected | Bear covers eyes |
+| Password field focused | Bear covers its eyes |
 | Invalid input | Bear shows worried reaction |
 | Valid input | Bear shows happy reaction |
 
-State Machines allow the animation to react **automatically and smoothly** to user interactions.
+State Machines make the animation **interactive and responsive**.
 
 ---
 
 ## 🌐 Technologies Used
 
-This project combines multiple technologies to build the animated login interface:
+The following technologies were used to build this project:
 
-- 🐦 **Flutter** – Cross-platform UI framework developed by Google
-- 🎨 **Rive** – Real-time interactive animation tool
-- 🧠 **Rive State Machines** – Used to control animation behavior
-- 🎯 **FocusNode** – Detects when input fields gain or lose focus
-- 🔍 **Regex** – Used to validate email and password input
-- 👂 **Listeners** – Detect changes in user input
-- 🎛️ **Controllers** – Manage animation logic and UI interaction
-- 📦 **Dart** – Programming language used by Flutter
-- 🧑‍💻 **Visual Studio Code** – Development environment used for coding and testing
+- 🐦 **Flutter** – Cross-platform UI framework developed by Google  
+- 🎨 **Rive** – Real-time animation and interaction design tool  
+- 🧠 **Rive State Machines** – Logic system used to control animation behavior  
+- 🎯 **FocusNode** – Detects when input fields gain or lose focus  
+- 🔍 **Regex** – Used to validate email and password inputs  
+- 👂 **Listeners** – Detect and respond to user input changes  
+- 🎛️ **Controllers** – Manage animation logic and UI interaction  
+- 📦 **Dart** – Programming language used by Flutter  
+- 🧑‍💻 **Visual Studio Code** – Development environment used to build the project  
 
 ---
 
@@ -101,18 +107,49 @@ Below is the basic structure of the project focusing on the main files inside th
 lib/
 │
 ├── main.dart
-│   └── Entry point of the application.
-│       Initializes Flutter and loads the main screen.
+│   └── Entry point of the Flutter application
 │
 ├── login_screen.dart
-│   └── Builds the animated login UI.
-│       Handles user input, validation logic,
-│       and communication with the Rive animation.
-```text
-lib/
-│
-├── main.dart
-│   └── Entry point of the application
-│
-├── login_screen.dart
-│   └── Builds the animated login UI and handles logic
+│   └── Builds the animated login interface and handles logic
+```
+
+### File Description
+
+**main.dart**
+- Initializes the Flutter application  
+- Starts the app  
+- Loads the main screen  
+
+**login_screen.dart**
+- Contains the login UI  
+- Connects Flutter with the Rive animation  
+- Detects user interaction with input fields  
+- Validates email and password  
+- Controls animation states  
+
+---
+
+## 🎓 Academic Information
+
+**Subject:** Graphication  
+**Instructor:** RODRIGO FIDEL GAXIOLA SOSA
+
+---
+
+## 🎨 Animation Credits
+
+The animation used in this project was created by the **Rive community**.
+
+Full credit goes to the original creator of the animation.
+
+Original asset link:  
+https://rive.app/marketplace/3645-7621-remix-of-login-machine/
+
+---
+
+## 💡 Notes
+
+- This README is written entirely in **English** as required.  
+- Emojis are used to make the documentation **more visually engaging**.  
+- The project demonstrates how **interactive animations can improve user interface design** in modern applications.  
+- The project is intended for **educational purposes for the Graphication course**.
